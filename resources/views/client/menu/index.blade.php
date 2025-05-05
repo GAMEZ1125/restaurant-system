@@ -19,33 +19,36 @@
             </a>
         </div>
         
-        <!-- Cápsulas de categorías en formato sticker animado -->
-        <div class="flex flex-wrap justify-center gap-4 md:gap-5">
-            @foreach($categories as $category)
-            <a href="{{ route('menu.category', $category) }}" 
-               class="group w-24 sm:w-28 md:w-32 text-center transform transition-all duration-300 hover:scale-110">
-                <div class="mx-auto w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 rounded-full bg-white shadow-md overflow-hidden border-2 border-red-100 mb-2 
-                          transition-all duration-300 hover:shadow-lg hover:border-red-300">
-                    @if($category->image)
-                    <div class="w-full h-full overflow-hidden">
-                        <img src="{{ asset('storage/' . $category->image) }}" 
-                             alt="{{ $category->name }}" 
-                             class="w-full h-full object-cover"
-                             loading="lazy">
+        <!-- Contenedor principal con ancho máximo para mejor centrado -->
+        <div class="max-w-4xl mx-auto">
+            <!-- Cápsulas de categorías en formato sticker animado -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
+                @foreach($categories as $category)
+                <a href="{{ route('menu.category', $category) }}" 
+                   class="group w-20 sm:w-24 md:w-28 text-center transform transition-all duration-300 hover:scale-110">
+                    <div class="mx-auto w-14 sm:w-16 md:w-20 h-14 sm:h-16 md:h-20 rounded-full bg-white shadow-md overflow-hidden border-2 border-red-100 mb-2 
+                              transition-all duration-300 hover:shadow-lg hover:border-red-300">
+                        @if($category->image)
+                        <div class="w-full h-full overflow-hidden">
+                            <img src="{{ asset('storage/' . $category->image) }}" 
+                                 alt="{{ $category->name }}" 
+                                 class="w-full h-full object-cover"
+                                 loading="lazy">
+                        </div>
+                        @else
+                        <div class="w-full h-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
+                            <i class="fas fa-utensils text-red-400"></i>
+                        </div>
+                        @endif
                     </div>
-                    @else
-                    <div class="w-full h-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
-                        <i class="fas fa-utensils text-red-400"></i>
-                    </div>
-                    @endif
-                </div>
-                <h3 class="text-xs sm:text-sm font-medium truncate">{{ $category->name }}</h3>
-            </a>
-            @endforeach
+                    <h3 class="text-xs sm:text-sm font-medium truncate">{{ $category->name }}</h3>
+                </a>
+                @endforeach
+            </div>
         </div>
     </div>
 
-    <!-- Productos destacados con el mismo formato de tarjetas de categorías de admin -->
+    <!-- Productos destacados con scroll horizontal -->
     <div class="mb-12">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl md:text-2xl font-semibold">Destacados del día</h2>
@@ -54,75 +57,93 @@
             </a>
         </div>
         
-        <!-- Grid de productos al estilo de categorías admin -->
-        <div class="flex flex-wrap justify-center sm:justify-start gap-6">
-            @foreach($featuredProducts as $product)
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:shadow-lg hover:-translate-y-1 w-full sm:w-64 md:w-72 lg:w-64 xl:w-72">
-                <div class="relative bg-gray-50">
-                    <!-- Contenedor de imagen con altura fija -->
-                    @if($product->image)
-                    <div class="h-40 overflow-hidden">
-                        <img 
-                            class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
-                            src="{{ asset('storage/' . $product->image) }}" 
-                            alt="{{ $product->name }}"
-                            loading="lazy"
-                        >
-                        <div class="absolute top-2 right-2 bg-red-600 text-white text-sm font-bold py-1 px-3 rounded-full shadow">
-                            ${{ number_format($product->price, 2) }}
-                        </div>
-                    </div>
-                    @else
-                    <div class="w-full h-40 bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
-                        <i class="fas fa-utensils text-3xl text-gray-400"></i>
-                    </div>
-                    @endif
-                    
-                    <!-- Badge de categoría -->
-                    <div class="absolute bottom-2 left-2">
-                        <span class="bg-white bg-opacity-90 text-sm text-gray-700 py-1 px-2 rounded-full shadow-sm">
-                            {{ $product->category->name }}
-                        </span>
-                    </div>
-                </div>
-                
-                <!-- Contenido con altura fija para mantener uniformidad -->
-                <div class="p-4 h-[140px] flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2 text-gray-800 truncate">{{ $product->name }}</h3>
-                        
-                        <!-- Descripción con truncado elegante -->
-                        <div class="mb-3 h-12 overflow-hidden">
-                            <p class="text-gray-600 text-sm line-clamp-2">
-                                {{ Str::limit($product->description, 100) }}
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="pt-2 border-t border-gray-100">
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <div class="flex space-x-2">
-                                <div class="relative w-20">
-                                    <select name="quantity" class="w-full text-sm appearance-none bg-white border border-gray-300 rounded pl-2 pr-6 py-1">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <option value="{{ $i }}">{{ $i }}</option>
-                                        @endfor
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                        <i class="fas fa-chevron-down text-xs"></i>
-                                    </div>
-                                </div>
-                                <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm py-1 px-2 rounded flex items-center justify-center transition duration-200">
-                                    <i class="fas fa-cart-plus mr-1"></i> Añadir
-                                </button>
+        <!-- Contenedor con scroll horizontal -->
+        <div class="relative max-w-7xl mx-auto">
+            <!-- Indicadores de scroll -->
+            <div class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 hidden md:block">
+                <button class="scroll-btn scroll-left bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md focus:outline-none" aria-label="Desplazar izquierda">
+                    <i class="fas fa-chevron-left text-red-600"></i>
+                </button>
+            </div>
+            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 hidden md:block">
+                <button class="scroll-btn scroll-right bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md focus:outline-none" aria-label="Desplazar derecha">
+                    <i class="fas fa-chevron-right text-red-600"></i>
+                </button>
+            </div>
+            
+            <!-- Contenedor con productos en línea horizontal -->
+            <div class="products-scroll-container overflow-x-auto pb-2 no-scrollbar">
+                <div class="flex space-x-4 px-1 py-2">
+                    @foreach($featuredProducts as $product)
+                    <div class="flex-shrink-0 bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1 w-[180px] h-[260px]">
+                        <!-- Contenedor de imagen con altura fija -->
+                        <div class="relative h-[100px] bg-gray-50">
+                            @if($product->image)
+                            <img 
+                                class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
+                                src="{{ asset('storage/' . $product->image) }}" 
+                                alt="{{ $product->name }}"
+                                loading="lazy"
+                            >
+                            @else
+                            <div class="w-full h-full bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
+                                <i class="fas fa-utensils text-xl text-gray-400"></i>
                             </div>
-                        </form>
+                            @endif
+                            
+                            <!-- Badge de precio más pequeño -->
+                            <div class="absolute top-1 right-1">
+                                <span class="bg-red-600 text-white text-xs font-bold py-0.5 px-2 rounded-full shadow-sm">
+                                    ${{ number_format($product->price, 2) }}
+                                </span>
+                            </div>
+                            
+                            <!-- Badge de categoría más compacto -->
+                            <div class="absolute bottom-1 left-1">
+                                <span class="bg-white bg-opacity-90 text-xs text-gray-700 py-0.5 px-1.5 rounded-full shadow-sm truncate max-w-[80px] inline-block">
+                                    {{ $product->category->name }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Contenido con altura fija -->
+                        <div class="p-2 flex flex-col h-[160px]">
+                            <h3 class="text-sm font-semibold mb-1 text-gray-800 truncate">{{ $product->name }}</h3>
+                            
+                            <!-- Descripción con truncado -->
+                            <div class="mb-2">
+                                <p class="text-gray-600 text-xs line-clamp-2">
+                                    {{ Str::limit($product->description, 60) }}
+                                </p>
+                            </div>
+                            
+                            <!-- Botón de añadir al carrito ajustado al fondo -->
+                            <div class="mt-auto pt-2 border-t border-gray-100">
+                                <form action="{{ route('cart.add') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <div class="flex space-x-1">
+                                        <div class="relative w-12">
+                                            <select name="quantity" class="w-full text-xs appearance-none bg-white border border-gray-300 rounded pl-1 pr-4 py-0.5">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-700">
+                                                <i class="fas fa-chevron-down text-[10px]"></i>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-0.5 px-1 rounded flex items-center justify-center transition duration-200">
+                                            <i class="fas fa-cart-plus mr-1 text-[10px]"></i> Añadir
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
-            @endforeach
         </div>
     </div>
     
@@ -220,4 +241,39 @@
         display: none;
     }
 </style>
+
+<!-- Script para el scroll horizontal con botones -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.products-scroll-container');
+        const scrollLeftBtn = document.querySelector('.scroll-left');
+        const scrollRightBtn = document.querySelector('.scroll-right');
+        
+        if (scrollLeftBtn && scrollRightBtn && container) {
+            // Manejar scroll con botones
+            scrollLeftBtn.addEventListener('click', function() {
+                container.scrollBy({ left: -220, behavior: 'smooth' });
+            });
+            
+            scrollRightBtn.addEventListener('click', function() {
+                container.scrollBy({ left: 220, behavior: 'smooth' });
+            });
+            
+            // Ocultar botones si no hay suficiente contenido para desplazar
+            function updateScrollButtons() {
+                const canScrollLeft = container.scrollLeft > 0;
+                const canScrollRight = container.scrollLeft < container.scrollWidth - container.clientWidth;
+                
+                scrollLeftBtn.style.opacity = canScrollLeft ? '1' : '0.5';
+                scrollRightBtn.style.opacity = canScrollRight ? '1' : '0.5';
+            }
+            
+            container.addEventListener('scroll', updateScrollButtons);
+            window.addEventListener('resize', updateScrollButtons);
+            
+            // Inicializar estado de botones
+            updateScrollButtons();
+        }
+    });
+</script>
 @endsection
