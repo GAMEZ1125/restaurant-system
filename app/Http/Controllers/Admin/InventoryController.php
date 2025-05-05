@@ -3,63 +3,76 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\InventoryItem;
+use App\Models\InventoryMovement;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $items = InventoryItem::with('movements')->get();
+        return view('admin.inventory.index', compact('items'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.inventory.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'unit' => 'required|string|max:50',
+            'quantity' => 'required|numeric|min:0',
+            'alert_threshold' => 'required|numeric|min:0',
+            'cost' => 'required|numeric|min:0'
+        ]);
+
+        InventoryItem::create($validated);
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Item de inventario creado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(InventoryItem $inventory)
     {
-        //
+        $movements = $inventory->movements()->latest()->paginate(10);
+        return view('admin.inventory.show', compact('inventory', 'movements'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(InventoryItem $inventory)
     {
-        //
+        return view('admin.inventory.edit', compact('inventory'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, InventoryItem $inventory)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'unit' => 'required|string|max:50',
+            'quantity' => 'required|numeric|min:0',
+            'alert_threshold' => 'required|numeric|min:0',
+            'cost' => 'required|numeric|min:0'
+        ]);
+
+        $inventory->update($validated);
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Item de inventario actualizado exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(InventoryItem $inventory)
     {
-        //
+        $inventory->delete();
+        return redirect()->route('inventory.index')
+            ->with('success', 'Item de inventario eliminado exitosamente.');
+    }
+
+    public function lowStock()
+    {
+        $items = InventoryItem::whereColumn('quantity', '<=', 'alert_threshold')->get();
+        return view('admin.inventory.low-stock', compact('items'));
     }
 }

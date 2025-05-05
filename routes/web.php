@@ -18,7 +18,9 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rutas de Administración
-Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+Route::prefix('admin')
+    ->middleware(['auth', \App\Http\Middleware\CheckRole::class.':admin'])
+    ->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
     
     // Categorías
@@ -30,6 +32,28 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     // Inventario
     Route::resource('inventory', App\Http\Controllers\Admin\InventoryController::class);
     Route::get('/inventory/low-stock', [App\Http\Controllers\Admin\InventoryController::class, 'lowStock'])->name('inventory.low-stock');
+    
+    // Movimientos de inventario
+    Route::post('/inventory/{inventory}/add-stock', [App\Http\Controllers\Admin\InventoryController::class, 'addStock'])
+        ->name('inventory.add-stock');
+    Route::post('/inventory/{inventory}/remove-stock', [App\Http\Controllers\Admin\InventoryController::class, 'removeStock'])
+        ->name('inventory.remove-stock');
+    Route::get('/inventory/{inventory}/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movements'])
+        ->name('inventory.movements');
+    
+    // Ajustes de inventario
+    Route::post('/inventory/{inventory}/adjust', [App\Http\Controllers\Admin\InventoryController::class, 'adjust'])
+        ->name('inventory.adjust');
+    
+    // Reportes de inventario
+    Route::get('/inventory/reports/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movementsReport'])
+        ->name('inventory.reports.movements');
+    Route::get('/inventory/reports/valuation', [App\Http\Controllers\Admin\InventoryController::class, 'valuationReport'])
+        ->name('inventory.reports.valuation');
+    
+    // Exportación de inventario
+    Route::get('/inventory/export', [App\Http\Controllers\Admin\InventoryController::class, 'export'])
+        ->name('inventory.export');
     
     // Mesas
     Route::resource('tables', App\Http\Controllers\Admin\TableController::class);
