@@ -1,4 +1,3 @@
-show.blade.php
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
