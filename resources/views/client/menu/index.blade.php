@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <!-- Productos destacados con scroll horizontal -->
+    <!-- Productos destacados organizados por categorías -->
     <div class="mb-12">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl md:text-2xl font-semibold">Destacados del día</h2>
@@ -57,7 +57,25 @@
             </a>
         </div>
         
-        <!-- Contenedor con scroll horizontal -->
+        <!-- Tabs de categorías -->
+        <div class="mb-6 overflow-x-auto no-scrollbar">
+            <div class="flex space-x-2 min-w-max pb-2">
+                <button type="button" class="category-tab active bg-red-600 text-white text-sm py-1 px-3 rounded-full" 
+                        data-category="all">
+                    Todos
+                </button>
+                @if(isset($categoriesWithFeatured))
+                    @foreach($categoriesWithFeatured as $categoryTab)
+                    <button type="button" class="category-tab bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm py-1 px-3 rounded-full" 
+                            data-category="{{ $categoryTab->id }}">
+                        {{ $categoryTab->name }}
+                    </button>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+
+        <!-- Contenedor con scroll horizontal para los productos -->
         <div class="relative max-w-7xl mx-auto">
             <!-- Indicadores de scroll -->
             <div class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 hidden md:block">
@@ -71,79 +89,165 @@
                 </button>
             </div>
             
-            <!-- Contenedor con productos en línea horizontal -->
-            <div class="products-scroll-container overflow-x-auto pb-2 no-scrollbar">
-                <div class="flex space-x-4 px-1 py-2">
-                    @foreach($featuredProducts as $product)
-                    <div class="flex-shrink-0 bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1 w-[180px] h-[260px]">
-                        <!-- Contenedor de imagen con altura fija -->
-                        <div class="relative h-[100px] bg-gray-50">
-                            @if($product->image)
-                            <img 
-                                class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
-                                src="{{ asset('storage/' . $product->image) }}" 
-                                alt="{{ $product->name }}"
-                                loading="lazy"
-                            >
-                            @else
-                            <div class="w-full h-full bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
-                                <i class="fas fa-utensils text-xl text-gray-400"></i>
-                            </div>
-                            @endif
-                            
-                            <!-- Badge de precio más pequeño -->
-                            <div class="absolute top-1 right-1">
-                                <span class="bg-red-600 text-white text-xs font-bold py-0.5 px-2 rounded-full shadow-sm">
-                                    ${{ number_format($product->price, 2) }}
-                                </span>
-                            </div>
-                            
-                            <!-- Badge de categoría más compacto -->
-                            <div class="absolute bottom-1 left-1">
-                                <span class="bg-white bg-opacity-90 text-xs text-gray-700 py-0.5 px-1.5 rounded-full shadow-sm truncate max-w-[80px] inline-block">
-                                    {{ $product->category->name }}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <!-- Contenido con altura fija -->
-                        <div class="p-2 flex flex-col h-[160px]">
-                            <h3 class="text-sm font-semibold mb-1 text-gray-800 truncate">{{ $product->name }}</h3>
-                            
-                            <!-- Descripción con truncado -->
-                            <div class="mb-2">
-                                <p class="text-gray-600 text-xs line-clamp-2">
-                                    {{ Str::limit($product->description, 60) }}
-                                </p>
+            <!-- Contenedor con productos en línea horizontal - Grupo "Todos" -->
+            <div class="products-scroll-container product-category active overflow-x-auto pb-2 no-scrollbar" data-category="all">
+                <div class="flex justify-center sm:justify-start space-x-4 px-1 py-2">
+                    @isset($featuredProducts)
+                        @foreach($featuredProducts as $product)
+                        <div class="flex-none bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1 w-[180px] h-[260px]">
+                            <!-- Contenedor de imagen con altura fija -->
+                            <div class="relative h-[100px] w-full bg-gray-50">
+                                @if($product->image)
+                                <img 
+                                    class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
+                                    src="{{ asset('storage/' . $product->image) }}" 
+                                    alt="{{ $product->name }}"
+                                    loading="lazy"
+                                >
+                                @else
+                                <div class="w-full h-full bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-utensils text-xl text-gray-400"></i>
+                                </div>
+                                @endif
+                                
+                                <!-- Badge de precio más pequeño -->
+                                <div class="absolute top-1 right-1">
+                                    <span class="bg-red-600 text-white text-xs font-bold py-0.5 px-2 rounded-full shadow-sm">
+                                        ${{ number_format($product->price, 2) }}
+                                    </span>
+                                </div>
+                                
+                                <!-- Badge de categoría más compacto -->
+                                <div class="absolute bottom-1 left-1">
+                                    <span class="bg-white bg-opacity-90 text-xs text-gray-700 py-0.5 px-1.5 rounded-full shadow-sm truncate max-w-[80px] inline-block">
+                                        {{ $product->category->name }}
+                                    </span>
+                                </div>
                             </div>
                             
-                            <!-- Botón de añadir al carrito ajustado al fondo -->
-                            <div class="mt-auto pt-2 border-t border-gray-100">
-                                <form action="{{ route('cart.add') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <div class="flex space-x-1">
-                                        <div class="relative w-12">
-                                            <select name="quantity" class="w-full text-xs appearance-none bg-white border border-gray-300 rounded pl-1 pr-4 py-0.5">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-700">
-                                                <i class="fas fa-chevron-down text-[10px]"></i>
+                            <!-- Contenido con altura fija -->
+                            <div class="p-2 flex flex-col h-[160px] w-full">
+                                <h3 class="text-sm font-semibold mb-1 text-gray-800 truncate">{{ $product->name }}</h3>
+                                
+                                <!-- Descripción con truncado -->
+                                <div class="mb-2">
+                                    <p class="text-gray-600 text-xs line-clamp-2">
+                                        {{ Str::limit($product->description, 60) }}
+                                    </p>
+                                </div>
+                                
+                                <!-- Botón de añadir al carrito ajustado al fondo -->
+                                <div class="mt-auto pt-2 border-t border-gray-100">
+                                    <form action="{{ route('cart.add') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <div class="flex space-x-1">
+                                            <div class="relative w-12">
+                                                <select name="quantity" class="w-full text-xs appearance-none bg-white border border-gray-300 rounded pl-1 pr-4 py-0.5">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-700">
+                                                    <i class="fas fa-chevron-down text-[10px]"></i>
+                                                </div>
                                             </div>
+                                            <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-0.5 px-1 rounded flex items-center justify-center transition duration-200">
+                                                <i class="fas fa-cart-plus mr-1 text-[10px]"></i> Añadir
+                                            </button>
                                         </div>
-                                        <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-0.5 px-1 rounded flex items-center justify-center transition duration-200">
-                                            <i class="fas fa-cart-plus mr-1 text-[10px]"></i> Añadir
-                                        </button>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
+                        @endforeach
+                    @else
+                        <div class="w-full text-center py-8 text-gray-500">
+                            <p>No hay productos destacados disponibles.</p>
+                        </div>
+                    @endisset
                 </div>
             </div>
+            
+            <!-- Contenedores por categoría - Inicialmente ocultos -->
+            @isset($categoriesWithFeatured)
+                @foreach($categoriesWithFeatured as $categoryGroup)
+                <div class="products-scroll-container product-category overflow-x-auto pb-2 no-scrollbar hidden" data-category="{{ $categoryGroup->id }}">
+                    <div class="flex justify-center sm:justify-start space-x-4 px-1 py-2">
+                        @isset($featuredProductsByCategory[$categoryGroup->id])
+                            @foreach($featuredProductsByCategory[$categoryGroup->id] as $product)
+                            <div class="flex-none bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1 w-[180px] h-[260px]">
+                                <!-- Contenedor de imagen con altura y ancho fijos -->
+                                <div class="relative h-[100px] w-full bg-gray-50">
+                                    @if($product->image)
+                                    <img 
+                                        class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
+                                        src="{{ asset('storage/' . $product->image) }}" 
+                                        alt="{{ $product->name }}"
+                                        loading="lazy"
+                                    >
+                                    @else
+                                    <div class="w-full h-full bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
+                                        <i class="fas fa-utensils text-xl text-gray-400"></i>
+                                    </div>
+                                    @endif
+                                    
+                                    <div class="absolute top-1 right-1">
+                                        <span class="bg-red-600 text-white text-xs font-bold py-0.5 px-2 rounded-full shadow-sm">
+                                            ${{ number_format($product->price, 2) }}
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Badge de categoría idéntico al de "Todos" -->
+                                    <div class="absolute bottom-1 left-1">
+                                        <span class="bg-white bg-opacity-90 text-xs text-gray-700 py-0.5 px-1.5 rounded-full shadow-sm truncate max-w-[80px] inline-block">
+                                            {{ $product->category->name }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-2 flex flex-col h-[160px] w-full">
+                                    <h3 class="text-sm font-semibold mb-1 text-gray-800 truncate">{{ $product->name }}</h3>
+                                    
+                                    <div class="mb-2">
+                                        <p class="text-gray-600 text-xs line-clamp-2">
+                                            {{ Str::limit($product->description, 60) }}
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="mt-auto pt-2 border-t border-gray-100">
+                                        <form action="{{ route('cart.add') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <div class="flex space-x-1">
+                                                <div class="relative w-12">
+                                                    <select name="quantity" class="w-full text-xs appearance-none bg-white border border-gray-300 rounded pl-1 pr-4 py-0.5">
+                                                        @for($i = 1; $i <= 5; $i++)
+                                                            <option value="{{ $i }}">{{ $i }}</option>
+                                                        @endfor
+                                                    </select>
+                                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-700">
+                                                        <i class="fas fa-chevron-down text-[10px]"></i>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-0.5 px-1 rounded flex items-center justify-center transition duration-200">
+                                                    <i class="fas fa-cart-plus mr-1 text-[10px]"></i> Añadir
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        @else
+                            <div class="w-full text-center py-8 text-gray-500">
+                                <p>No hay productos destacados en esta categoría.</p>
+                            </div>
+                        @endisset
+                    </div>
+                </div>
+                @endforeach
+            @endisset
         </div>
     </div>
     
@@ -242,38 +346,100 @@
     }
 </style>
 
-<!-- Script para el scroll horizontal con botones -->
+<!-- Script para las pestañas de categorías y el scroll horizontal -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const container = document.querySelector('.products-scroll-container');
-        const scrollLeftBtn = document.querySelector('.scroll-left');
-        const scrollRightBtn = document.querySelector('.scroll-right');
+        // Configuración de tabs para categorías
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const productCategories = document.querySelectorAll('.product-category');
         
-        if (scrollLeftBtn && scrollRightBtn && container) {
-            // Manejar scroll con botones
-            scrollLeftBtn.addEventListener('click', function() {
-                container.scrollBy({ left: -220, behavior: 'smooth' });
-            });
-            
-            scrollRightBtn.addEventListener('click', function() {
-                container.scrollBy({ left: 220, behavior: 'smooth' });
-            });
-            
-            // Ocultar botones si no hay suficiente contenido para desplazar
-            function updateScrollButtons() {
-                const canScrollLeft = container.scrollLeft > 0;
-                const canScrollRight = container.scrollLeft < container.scrollWidth - container.clientWidth;
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Actualizar estados de los tabs
+                categoryTabs.forEach(t => t.classList.remove('active', 'bg-red-600', 'text-white'));
+                categoryTabs.forEach(t => t.classList.add('bg-gray-100', 'text-gray-800'));
+                this.classList.add('active', 'bg-red-600', 'text-white');
+                this.classList.remove('bg-gray-100', 'text-gray-800');
                 
-                scrollLeftBtn.style.opacity = canScrollLeft ? '1' : '0.5';
-                scrollRightBtn.style.opacity = canScrollRight ? '1' : '0.5';
+                // Mostrar el contenido correspondiente
+                const categoryId = this.getAttribute('data-category');
+                productCategories.forEach(container => {
+                    if (container.getAttribute('data-category') === categoryId) {
+                        container.classList.remove('hidden');
+                    } else {
+                        container.classList.add('hidden');
+                    }
+                });
+                
+                // Inicializar scroll buttons para el nuevo contenedor visible
+                updateScrollButtons();
+            });
+        });
+        
+        // Configuración de los botones de desplazamiento
+        const scrollLeftBtns = document.querySelectorAll('.scroll-left');
+        const scrollRightBtns = document.querySelectorAll('.scroll-right');
+        
+        function updateScrollButtons() {
+            const activeContainer = document.querySelector('.product-category:not(.hidden)');
+            
+            if (activeContainer) {
+                const canScrollLeft = activeContainer.scrollLeft > 0;
+                const canScrollRight = activeContainer.scrollLeft < activeContainer.scrollWidth - activeContainer.clientWidth;
+                
+                scrollLeftBtns.forEach(btn => {
+                    btn.style.opacity = canScrollLeft ? '1' : '0.5';
+                });
+                
+                scrollRightBtns.forEach(btn => {
+                    btn.style.opacity = canScrollRight ? '1' : '0.5';
+                });
             }
-            
-            container.addEventListener('scroll', updateScrollButtons);
-            window.addEventListener('resize', updateScrollButtons);
-            
-            // Inicializar estado de botones
-            updateScrollButtons();
         }
+        
+        scrollLeftBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const activeContainer = document.querySelector('.product-category:not(.hidden)');
+                if (activeContainer) {
+                    activeContainer.scrollBy({ left: -220, behavior: 'smooth' });
+                }
+            });
+        });
+        
+        scrollRightBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const activeContainer = document.querySelector('.product-category:not(.hidden)');
+                if (activeContainer) {
+                    activeContainer.scrollBy({ left: 220, behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Establecer manejadores de eventos para actualizar el estado de los botones
+        productCategories.forEach(container => {
+            container.addEventListener('scroll', updateScrollButtons);
+        });
+        
+        window.addEventListener('resize', updateScrollButtons);
+        
+        // Inicializar estado de botones
+        updateScrollButtons();
     });
 </script>
+
+<style>
+    /* Estilos para las pestañas activas */
+    .category-tab.active {
+        font-weight: 500;
+    }
+    
+    /* Eliminar scrollbar pero mantener funcionalidad */
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
 @endsection

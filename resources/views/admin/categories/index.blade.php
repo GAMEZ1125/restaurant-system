@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Gestión de Categorías') }}
             </h2>
-            <a href="{{ route('categories.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out transform hover:scale-105">
+            <a href="{{ route('categories.create') }}" class="bg-blue-600 hover:bg-blue-700 text-green font-bold py-2 px-4 rounded shadow-md transition duration-150 ease-in-out transform hover:scale-105">
                 <i class="fas fa-plus mr-1"></i> Nueva Categoría
             </a>
         </div>

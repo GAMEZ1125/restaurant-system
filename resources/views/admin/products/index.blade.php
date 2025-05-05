@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Gestión de Productos') }}
             </h2>
-            <a href="{{ route('products.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{{ route('products.create') }}" class="bg-green-500 hover:bg-green-700 text-red font-bold py-2 px-4 rounded">
                 <i class="fas fa-plus mr-1"></i> Nuevo Producto
             </a>
         </div>
