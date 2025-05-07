@@ -66,6 +66,7 @@ Route::prefix('admin')
 
         // Reservaciones
         Route::resource('reservations', App\Http\Controllers\Admin\ReservationController::class);
+        Route::get('/reservations-calendar', [App\Http\Controllers\Admin\ReservationController::class, 'calendar'])->name('reservations.calendar');
 
         // Reportes
         Route::get('/reports/sales', [App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
