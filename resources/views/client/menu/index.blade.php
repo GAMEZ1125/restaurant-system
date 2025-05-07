@@ -89,14 +89,84 @@
                 </button>
             </div>
             
+            <!-- Estilos mejorados para responsividad -->
+            <style>
+                .featured-product-card {
+                    width: 170px !important;
+                    height: 260px !important;
+                    max-width: 170px !important;
+                    max-height: 260px !important;
+                    min-width: 170px !important;
+                    min-height: 260px !important;
+                    box-sizing: border-box !important;
+                    overflow: hidden !important;
+                    flex: none !important;
+                }
+                
+                @media (max-width: 640px) {
+                    .featured-product-card {
+                        width: 150px !important;
+                        min-width: 150px !important;
+                        max-width: 150px !important;
+                    }
+                }
+                
+                @media (max-width: 400px) {
+                    .featured-product-card {
+                        width: 140px !important;
+                        min-width: 140px !important;
+                        max-width: 140px !important;
+                    }
+                }
+                
+                .featured-product-image {
+                    width: 100% !important;
+                    height: 100px !important;
+                    min-height: 100px !important;
+                    max-height: 100px !important;
+                    overflow: hidden !important;
+                }
+                
+                .featured-product-content {
+                    width: 100% !important;
+                    height: 160px !important;
+                    min-height: 160px !important;
+                    max-height: 160px !important;
+                    overflow: hidden !important;
+                }
+                
+                .featured-product-desc {
+                    height: 38px !important;
+                    min-height: 38px !important;
+                    max-height: 38px !important;
+                    overflow: hidden !important;
+                }
+                
+                /* Mejora del scroll container */
+                .products-scroll-container {
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
+                    scroll-behavior: smooth;
+                    -webkit-overflow-scrolling: touch;
+                    padding-bottom: 10px;
+                }
+                
+                /* Mejora de espaciado para móviles */
+                @media (max-width: 640px) {
+                    .product-spacing {
+                        gap: 10px;
+                    }
+                }
+            </style>
+
             <!-- Contenedor con productos en línea horizontal - Grupo "Todos" -->
             <div class="products-scroll-container product-category active overflow-x-auto pb-2 no-scrollbar" data-category="all">
-                <div class="flex justify-center sm:justify-start space-x-4 px-1 py-2">
+                <div class="flex justify-center sm:justify-start px-1 py-2 space-x-4 sm:space-x-3 product-spacing">
                     @isset($featuredProducts)
                         @foreach($featuredProducts as $product)
-                        <div class="flex-none bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1 w-[180px] h-[260px]">
+                        <div class="featured-product-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1">
                             <!-- Contenedor de imagen con altura fija -->
-                            <div class="relative h-[100px] w-full bg-gray-50">
+                            <div class="featured-product-image relative bg-gray-50">
                                 @if($product->image)
                                 <img 
                                     class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
@@ -126,11 +196,11 @@
                             </div>
                             
                             <!-- Contenido con altura fija -->
-                            <div class="p-2 flex flex-col h-[160px] w-full">
+                            <div class="featured-product-content p-2 flex flex-col">
                                 <h3 class="text-sm font-semibold mb-1 text-gray-800 truncate">{{ $product->name }}</h3>
                                 
                                 <!-- Descripción con truncado -->
-                                <div class="mb-2">
+                                <div class="featured-product-desc mb-2">
                                     <p class="text-gray-600 text-xs line-clamp-2">
                                         {{ Str::limit($product->description, 60) }}
                                     </p>
@@ -173,12 +243,12 @@
             @isset($categoriesWithFeatured)
                 @foreach($categoriesWithFeatured as $categoryGroup)
                 <div class="products-scroll-container product-category overflow-x-auto pb-2 no-scrollbar hidden" data-category="{{ $categoryGroup->id }}">
-                    <div class="flex justify-center sm:justify-start space-x-4 px-1 py-2">
+                    <div class="flex justify-center sm:justify-start px-1 py-2 space-x-4 sm:space-x-3 product-spacing">
                         @isset($featuredProductsByCategory[$categoryGroup->id])
                             @foreach($featuredProductsByCategory[$categoryGroup->id] as $product)
-                            <div class="flex-none bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1 w-[180px] h-[260px]">
+                            <div class="featured-product-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden border border-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1">
                                 <!-- Contenedor de imagen con altura y ancho fijos -->
-                                <div class="relative h-[100px] w-full bg-gray-50">
+                                <div class="featured-product-image relative bg-gray-50">
                                     @if($product->image)
                                     <img 
                                         class="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110" 
@@ -206,10 +276,10 @@
                                     </div>
                                 </div>
                                 
-                                <div class="p-2 flex flex-col h-[160px] w-full">
+                                <div class="featured-product-content p-2 flex flex-col">
                                     <h3 class="text-sm font-semibold mb-1 text-gray-800 truncate">{{ $product->name }}</h3>
                                     
-                                    <div class="mb-2">
+                                    <div class="featured-product-desc mb-2">
                                         <p class="text-gray-600 text-xs line-clamp-2">
                                             {{ Str::limit($product->description, 60) }}
                                         </p>
