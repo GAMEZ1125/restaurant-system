@@ -27,7 +27,18 @@
                         <li><a href="{{ route('home') }}" class="text-gray-800 hover:text-red-600">Inicio</a></li>
                         <li><a href="{{ route('menu') }}" class="text-gray-800 hover:text-red-600">Menú</a></li>
                         <li><a href="{{ route('reservation') }}" class="text-gray-800 hover:text-red-600">Reservaciones</a></li>
-                        <li><a href="{{ route('cart') }}" class="text-gray-800 hover:text-red-600">Carrito</a></li>
+                        <li>
+                            <div class="relative">
+                                <a href="{{ route('cart') }}" class="flex items-center text-gray-800 hover:text-red-600">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    @if(Session::has('cart') && count(Session::get('cart')) > 0)
+                                        <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                            {{ count(Session::get('cart')) }}
+                                        </span>
+                                    @endif
+                                </a>
+                            </div>
+                        </li>
                         @auth
                             <li><a href="{{ route('account') }}" class="text-gray-800 hover:text-red-600">Mi Cuenta</a></li>
                         @else

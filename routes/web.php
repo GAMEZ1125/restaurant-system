@@ -84,8 +84,11 @@ Route::get('/menu/search', [App\Http\Controllers\Client\MenuController::class, '
 // Carrito
 Route::get('/cart', [App\Http\Controllers\Client\CartController::class, 'index'])->name('cart');
 Route::post('/cart/add', [App\Http\Controllers\Client\CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart/update', [App\Http\Controllers\Client\CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/remove', [App\Http\Controllers\Client\CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/update', [App\Http\Controllers\Client\CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove/{productId}', [App\Http\Controllers\Client\CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [App\Http\Controllers\Client\CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/checkout', [App\Http\Controllers\Client\CartController::class, 'checkout'])->name('cart.checkout');
+Route::get('/cart/confirmation', [App\Http\Controllers\Client\CartController::class, 'confirmation'])->name('cart.confirmation');
 
 // Checkout
 Route::get('/checkout', [App\Http\Controllers\Client\CheckoutController::class, 'index'])->middleware('auth')->name('checkout');
