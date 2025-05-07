@@ -77,6 +77,9 @@ Route::prefix('admin')
 Route::get('/', [App\Http\Controllers\Client\MenuController::class, 'index'])->name('home');
 Route::get('/menu', [App\Http\Controllers\Client\MenuController::class, 'all'])->name('menu');
 Route::get('/menu/{category}', [App\Http\Controllers\Client\MenuController::class, 'category'])->name('menu.category');
+Route::get('/menu/product/{product}', [App\Http\Controllers\Client\MenuController::class, 'product'])->name('menu.product');
+// Buscar productos
+Route::get('/menu/search', [App\Http\Controllers\Client\MenuController::class, 'search'])->name('menu.search');
 
 // Carrito
 Route::get('/cart', [App\Http\Controllers\Client\CartController::class, 'index'])->name('cart');

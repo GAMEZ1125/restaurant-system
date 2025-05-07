@@ -143,6 +143,32 @@
                         </div>
                     </div>
                 </a>
+                <!-- Tarjeta Reservaciones -->
+                <a href="/admin/reservations" class="group relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500 group-hover:w-2 transition-all duration-300"></div>
+                    <div class="relative p-5">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 p-3 rounded-full bg-amber-100 text-amber-600 mr-4 group-hover:scale-110 transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800 group-hover:text-amber-600 transition-colors duration-300">Reservaciones</h3>
+                                <p class="text-sm text-gray-500">Gestión de Reservaciones Programadas</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                            <span class="text-sm font-medium text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Acceder</span>
+                            <span class="text-amber-600 transform translate-x-0 group-hover:translate-x-1 transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
             </div>
             
             <!-- Panel de bienvenida original -->
