@@ -19,56 +19,58 @@ Route::middleware('auth')->group(function () {
 
 // Rutas de Administración
 Route::prefix('admin')
-    ->middleware(['auth', \App\Http\Middleware\CheckRole::class.':admin'])
+    ->middleware(['auth', \App\Http\Middleware\CheckRole::class . ':admin'])
     ->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
-    
-    // Categorías
-    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
-    
-    // Productos
-    Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
-    
-    // Inventario
-    Route::resource('inventory', App\Http\Controllers\Admin\InventoryController::class);
-    Route::get('/inventory/low-stock', [App\Http\Controllers\Admin\InventoryController::class, 'lowStock'])->name('inventory.low-stock');
-    
-    // Movimientos de inventario
-    Route::post('/inventory/{inventory}/add-stock', [App\Http\Controllers\Admin\InventoryController::class, 'addStock'])
-        ->name('inventory.add-stock');
-    Route::post('/inventory/{inventory}/remove-stock', [App\Http\Controllers\Admin\InventoryController::class, 'removeStock'])
-        ->name('inventory.remove-stock');
-    Route::get('/inventory/{inventory}/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movements'])
-        ->name('inventory.movements');
-    
-    // Ajustes de inventario
-    Route::post('/inventory/{inventory}/adjust', [App\Http\Controllers\Admin\InventoryController::class, 'adjust'])
-        ->name('inventory.adjust');
-    
-    // Reportes de inventario
-    Route::get('/inventory/reports/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movementsReport'])
-        ->name('inventory.reports.movements');
-    Route::get('/inventory/reports/valuation', [App\Http\Controllers\Admin\InventoryController::class, 'valuationReport'])
-        ->name('inventory.reports.valuation');
-    
-    // Exportación de inventario
-    Route::get('/inventory/export', [App\Http\Controllers\Admin\InventoryController::class, 'export'])
-        ->name('inventory.export');
-    
-    // Mesas
-    Route::resource('tables', App\Http\Controllers\Admin\TableController::class);
-    
-    // Pedidos
-    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class);
-    Route::patch('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
-    
-    // Reservaciones
-    Route::resource('reservations', App\Http\Controllers\Admin\ReservationController::class);
-    
-    // Reportes
-    Route::get('/reports/sales', [App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
-    Route::get('/reports/inventory', [App\Http\Controllers\Admin\ReportController::class, 'inventory'])->name('reports.inventory');
-});
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
+        // Categorías
+        Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
+
+        // Productos
+        Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+
+        // Inventario
+        Route::resource('inventory', App\Http\Controllers\Admin\InventoryController::class);
+        Route::get('/inventory/low-stock', [App\Http\Controllers\Admin\InventoryController::class, 'lowStock'])->name('inventory.low-stock');
+
+        // Movimientos de inventario
+        Route::post('/inventory/{inventory}/add-stock', [App\Http\Controllers\Admin\InventoryController::class, 'addStock'])
+            ->name('inventory.add-stock');
+        Route::post('/inventory/{inventory}/remove-stock', [App\Http\Controllers\Admin\InventoryController::class, 'removeStock'])
+            ->name('inventory.remove-stock');
+        Route::get('/inventory/{inventory}/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movements'])
+            ->name('inventory.movements');
+
+        // Ajustes de inventario
+        Route::post('/inventory/{inventory}/adjust', [App\Http\Controllers\Admin\InventoryController::class, 'adjust'])
+            ->name('inventory.adjust');
+
+        // Reportes de inventario
+        Route::get('/inventory/reports/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movementsReport'])
+            ->name('inventory.reports.movements');
+        Route::get('/inventory/reports/valuation', [App\Http\Controllers\Admin\InventoryController::class, 'valuationReport'])
+            ->name('inventory.reports.valuation');
+
+        // Exportación de inventario
+        Route::get('/inventory/export', [App\Http\Controllers\Admin\InventoryController::class, 'export'])
+            ->name('inventory.export');
+
+        // Rutas para mesas
+        Route::resource('tables', App\Http\Controllers\Admin\TableController::class);
+        Route::patch('/tables/{table}/status', [App\Http\Controllers\Admin\TableController::class, 'updateStatus'])->name('tables.update-status');
+        Route::get('/map-tables', [App\Http\Controllers\Admin\TableController::class, 'map'])->name('tables.map');
+
+        // Pedidos
+        Route::resource('orders', App\Http\Controllers\Admin\OrderController::class);
+        Route::patch('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+
+        // Reservaciones
+        Route::resource('reservations', App\Http\Controllers\Admin\ReservationController::class);
+
+        // Reportes
+        Route::get('/reports/sales', [App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
+        Route::get('/reports/inventory', [App\Http\Controllers\Admin\ReportController::class, 'inventory'])->name('reports.inventory');
+    });
 
 // Rutas de Cliente
 Route::get('/', [App\Http\Controllers\Client\MenuController::class, 'index'])->name('home');
@@ -97,4 +99,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{order}', [App\Http\Controllers\Client\AccountController::class, 'showOrder'])->name('customer.orders.show');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
