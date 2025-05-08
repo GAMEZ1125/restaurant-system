@@ -69,8 +69,21 @@ Route::prefix('admin')
         Route::get('/reservations-calendar', [App\Http\Controllers\Admin\ReservationController::class, 'calendar'])->name('reservations.calendar');
 
         // Reportes
-        Route::get('/reports/sales', [App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
-        Route::get('/reports/inventory', [App\Http\Controllers\Admin\ReportController::class, 'inventory'])->name('reports.inventory');
+        Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('admin.reports.index');
+        Route::get('/reports/sales', [App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('admin.reports.sales');
+        Route::get('/reports/inventory', [App\Http\Controllers\Admin\ReportController::class, 'inventory'])->name('admin.reports.inventory');
+        Route::get('/reports/products', [App\Http\Controllers\Admin\ReportController::class, 'products'])->name('admin.reports.products');
+        Route::get('/reports/budget', [App\Http\Controllers\Admin\ReportController::class, 'budget'])->name('admin.reports.budget');
+        Route::post('/reports/budget/save', [App\Http\Controllers\Admin\ReportController::class, 'saveBudget'])->name('admin.reports.budget.save');
+        Route::get('/reports/taxes', [App\Http\Controllers\Admin\ReportController::class, 'taxes'])->name('admin.reports.taxes');
+        // Añadir esta línea para el reporte financiero
+        Route::get('/reports/financial', [App\Http\Controllers\Admin\ReportController::class, 'financial'])->name('admin.reports.financial');
+        
+        // Exportación de reportes
+        Route::get('/reports/sales/export', [App\Http\Controllers\Admin\ReportController::class, 'exportSales'])->name('admin.reports.export.sales');
+        Route::get('/reports/inventory/export', [App\Http\Controllers\Admin\ReportController::class, 'exportInventory'])->name('admin.reports.export.inventory');
+        Route::get('/reports/products/export', [App\Http\Controllers\Admin\ReportController::class, 'exportProducts'])->name('admin.reports.export.products');
+        Route::get('/reports/taxes/export', [App\Http\Controllers\Admin\ReportController::class, 'exportTaxes'])->name('admin.reports.export.taxes');
     });
 
 // Rutas de Cliente
