@@ -110,7 +110,10 @@ Route::get('/checkout/success', [App\Http\Controllers\Client\CheckoutController:
 
 // Reservaciones
 Route::get('/reservation', [App\Http\Controllers\Client\ReservationController::class, 'index'])->name('reservation');
+Route::post('/reservation/check-availability', [App\Http\Controllers\Client\ReservationController::class, 'checkAvailability'])->name('reservation.check-availability');
 Route::post('/reservation', [App\Http\Controllers\Client\ReservationController::class, 'store'])->name('reservation.store');
+Route::get('/reservation/success/{reservation}', [App\Http\Controllers\Client\ReservationController::class, 'success'])->name('reservation.success');
+Route::post('/reservation/whatsapp', [App\Http\Controllers\Client\ReservationController::class, 'contactWhatsApp'])->name('reservation.whatsapp');
 
 // Área de cliente
 Route::middleware(['auth'])->group(function () {

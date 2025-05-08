@@ -64,28 +64,31 @@ class Table extends Model
     /**
      * Verificar si la mesa está disponible en una fecha y hora específica
      */
-    public function isAvailableAt($dateTime, $duration = 60)
+    public function isAvailableAt($dateTime, $duration = 90)
     {
+        // Si la mesa está en mantenimiento, no está disponible
         if ($this->status === 'maintenance') {
             return false;
         }
-
-        $startTime = new \DateTime($dateTime);
-        $endTime = (clone $startTime)->modify("+{$duration} minutes");
-
-        return !$this->reservations()
+        
+        // Duración en minutos (por defecto 90 min)
+        $startTime = $dateTime->copy();
+        $endTime = $dateTime->copy()->addMinutes($duration);
+        
+        // Verificar si hay reservaciones que se solapan con el horario solicitado
+        $conflictingReservations = $this->reservations()
             ->where('status', '!=', 'cancelled')
             ->where(function ($query) use ($startTime, $endTime) {
-                $query->where(function ($q) use ($startTime, $endTime) {
-                    // Verifica si hay alguna reserva que se solape con el periodo solicitado
-                    $q->where('reservation_time', '<', $endTime->format('Y-m-d H:i:s'))
-                      ->where(function ($inner) use ($startTime) {
-                          $inner->whereRaw('DATE_ADD(reservation_time, INTERVAL duration MINUTE) > ?', [
-                              $startTime->format('Y-m-d H:i:s')
-                          ]);
-                      });
-                });
+                // Reservaciones que empiezan durante nuestra reservación
+                $query->whereBetween('reservation_time', [$startTime, $endTime])
+                    // O que terminan durante nuestra reservación
+                    ->orWhere(function ($q) use ($startTime, $endTime) {
+                        $q->where('reservation_time', '<=', $startTime)
+                            ->whereRaw('DATE_ADD(reservation_time, INTERVAL duration MINUTE) >= ?', [$startTime]);
+                    });
             })
-            ->exists();
+            ->count();
+        
+        return $conflictingReservations === 0;
     }
 }
